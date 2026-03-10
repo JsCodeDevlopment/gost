@@ -12,7 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Bootstrap() {
+// SetupApp bootstraps the network layers without listening to a port (Perfect for E2E tests and Serverless functions)
+func SetupApp() *gin.Engine {
 	config.LoadEnv()
 
 	config.ConnectDatabase()
@@ -28,6 +29,13 @@ func Bootstrap() {
 	api := router.Group("/api/v1")
 
 	users.InitModule(api)
+
+	return router
+}
+
+// Bootstrap initializes the application and starts the server
+func Bootstrap() {
+	router := SetupApp()
 
 	port := os.Getenv("PORT")
 	if port == "" {
