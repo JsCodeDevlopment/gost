@@ -7,6 +7,7 @@ import (
 	"gost/src/common/filters"
 	"gost/src/common/interceptors"
 	"gost/src/config"
+	"gost/src/modules/auth"
 	"gost/src/modules/users"
 
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,7 @@ func SetupApp() *gin.Engine {
 	api := router.Group("/api/v1")
 
 	users.InitModule(api)
+	auth.InitModule(api)
 
 	return router
 }
