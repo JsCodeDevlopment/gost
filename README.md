@@ -248,6 +248,7 @@ To explore the full potential of the library, we've created a directory with exp
 6. [06 - Utilities: Micro-Caching and File Uploads](./docs/06-utilities-micro-caching-and-file-uploads.md)
 7. [07 - Deployment and Hosting Strategy](./docs/07-deployment-and-hosting-strategy.md)
 8. [08 - Testing Strategies (Unit & E2E)](./docs/08-testing-strategies.md)
+9. [09 - Security Deep Dive: Authenticity and Protection](./docs/09-security-deep-dive-authenticity-and-protection.md)
 
 ---
 
