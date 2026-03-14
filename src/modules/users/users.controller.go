@@ -49,11 +49,7 @@ func (ctrl *UserController) FindOne(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := ctrl.service.FindById(uint(id))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"statusCode": http.StatusNotFound,
-			"error":      "Not Found",
-			"message":    "User not found",
-		})
+		utils.FormattedErrorGenerator(c, http.StatusNotFound, "Not Found", "User not found")
 		return
 	}
 
@@ -65,7 +61,7 @@ func (ctrl *UserController) Update(c *gin.Context) {
 
 	var user entities.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.FormattedErrorGenerator(c, http.StatusBadRequest, "Bad Request", "Invalid request body")
 		return
 	}
 
@@ -92,11 +88,7 @@ func (ctrl *UserController) UploadAvatar(c *gin.Context) {
 
 	filePath, err := utils.UploadImage(c, "file", "./uploads")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"statusCode": http.StatusBadRequest,
-			"error":      "Bad Request",
-			"message":    "File upload failed: " + err.Error(),
-		})
+		utils.FormattedErrorGenerator(c, http.StatusBadRequest, "Bad Request", "File upload failed: "+err.Error())
 		return
 	}
 

@@ -10,6 +10,7 @@ type UserRepository interface {
 	Create(user *entities.User) error
 	FindAll() ([]entities.User, error)
 	FindById(id uint) (*entities.User, error)
+	FindByEmail(email string) (*entities.User, error)
 	Update(user *entities.User) error
 	Delete(id uint) error
 }
@@ -35,6 +36,12 @@ func (r *userRepository) FindAll() ([]entities.User, error) {
 func (r *userRepository) FindById(id uint) (*entities.User, error) {
 	var user entities.User
 	err := r.db.First(&user, id).Error
+	return &user, err
+}
+
+func (r *userRepository) FindByEmail(email string) (*entities.User, error) {
+	var user entities.User
+	err := r.db.Where("email = ?", email).First(&user).Error
 	return &user, err
 }
 
