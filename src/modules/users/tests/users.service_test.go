@@ -46,6 +46,14 @@ func (m *MockUserRepository) Delete(id uint) error {
 	return args.Error(0)
 }
 
+func (m *MockUserRepository) FindByEmail(email string) (*entities.User, error) {
+	args := m.Called(email)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.User), args.Error(1)
+	}
+	return nil, args.Error(1)
+}
+
 // Compile assertion that Mock implements the real repo
 var _ users.UserRepository = (*MockUserRepository)(nil)
 
@@ -55,8 +63,9 @@ func TestUserService_Create_Success(t *testing.T) {
 	service := users.NewUserService(mockRepo)
 
 	d := dto.CreateUserDto{
-		Name:  "Testing Name",
-		Email: "test@domain.com",
+		Name:     "Testing Name",
+		Email:    "test@domain.com",
+		Password: "strongpassword",
 	}
 
 	// Tell the mock that when 'Create' is called with ANY user pointer, return 'nil' (no error)
