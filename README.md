@@ -33,6 +33,7 @@ It provides a ready-to-use environment completely configured with a powerful HTT
 - **CORS Configured**: Out-of-the-box support for frontend consumers (SPA-friendly). Dynamically configured via the `ALLOWED_CORS` environment variable logic, allowing you to quickly secure and scale endpoints for multiple frontends (`http://localhost:3000,http://dashboard.local`).
 - **File Upload Support**: Built-in utility functioning similarly to Multer for handling `multipart/form-data`.
 - **Database & Cache Ready**: Pre-configured with PostgreSQL (via GORM) and Redis, easily testable via Docker Compose.
+- **Connectivity & Real-time**: Fully integrated RabbitMQ for async processing, Websockets (Hub/Client) for real-time, and secure Webhooks with HMAC signatures and auto-retries.
 
 ---
 
@@ -249,6 +250,7 @@ To explore the full potential of the library, we've created a directory with exp
 7. [07 - Deployment and Hosting Strategy](./docs/07-deployment-and-hosting-strategy.md)
 8. [08 - Testing Strategies (Unit & E2E)](./docs/08-testing-strategies.md)
 9. [09 - Security Deep Dive: Authenticity and Protection](./docs/09-security-deep-dive-authenticity-and-protection.md)
+10. [10 - Communication and Connectivity (RabbitMQ, WS, Webhooks)](./docs/10-communication-and-connectivity.md)
 
 ---
 
