@@ -9,6 +9,7 @@ import (
 	"gost/src/config"
 	"gost/src/modules/auth"
 	"gost/src/modules/users"
+	"gost/src/modules/ws"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +19,7 @@ func SetupApp() *gin.Engine {
 
 	config.ConnectDatabase()
 	config.ConnectRedis()
+	config.ConnectRabbitMQ()
 
 	router := gin.Default()
 
@@ -30,6 +32,7 @@ func SetupApp() *gin.Engine {
 
 	users.InitModule(api)
 	auth.InitModule(api)
+	ws.InitModule(api)
 
 	return router
 }
