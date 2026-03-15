@@ -30,10 +30,13 @@ It provides a ready-to-use environment completely configured with a powerful HTT
 - **Built-in Validation**: Class-validator style validation using Go Generics and struct tags (`Pipes`).
 - **Global Error Handling**: Centralized exception filtering to avoid leaking panics and standardizing API error JSON responses (`Filters`).
 - **Middleware Abstractions**: Simple interfaces for `Interceptors` (request logging/modification) and `Guards` (authentication/authorization).
-- **CORS Configured**: Out-of-the-box support for frontend consumers (SPA-friendly). Dynamically configured via the `ALLOWED_CORS` environment variable logic, allowing you to quickly secure and scale endpoints for multiple frontends (`http://localhost:3000,http://dashboard.local`).
-- **File Upload Support**: Built-in utility functioning similarly to Multer for handling `multipart/form-data`.
+- **Advanced Security**: Integrated JWT with Access/Refresh tokens, Redis-based blacklisting, and RBAC (Role-Based Access Control).
+- **Communication & Real-time**: Fully integrated RabbitMQ for async processing, Websockets (Hub/Client) for real-time interaction, and secure Webhooks with HMAC signatures and auto-retries.
+- **Data Protection**: Hardened password hashing with Bcrypt and AES-256-GCM field-level encryption.
+- **Resilience**: Redis-powered Rate Limiting to prevent DDoS and brute-force attacks.
+- **CORS Configured**: Out-of-the-box support for frontend consumers (SPA-friendly). Dynamically configured via the `ALLOWED_CORS` environment variable logic.
+- **File Upload Support**: Built-in utility for handling `multipart/form-data` uploads.
 - **Database & Cache Ready**: Pre-configured with PostgreSQL (via GORM) and Redis, easily testable via Docker Compose.
-- **Connectivity & Real-time**: Fully integrated RabbitMQ for async processing, Websockets (Hub/Client) for real-time, and secure Webhooks with HMAC signatures and auto-retries.
 
 ---
 
@@ -41,8 +44,9 @@ It provides a ready-to-use environment completely configured with a powerful HTT
 
 - **Web Framework:** [Gin Web Framework](https://github.com/gin-gonic/gin)
 - **Database ORM:** [GORM](https://gorm.io/)
-- **Database Engine:** PostgreSQL
-- **Caching:** [Go-Redis](https://github.com/go-redis/redis)
+- **Messaging:** [RabbitMQ (AMQP)](https://www.rabbitmq.com/)
+- **Caching & State:** [Go-Redis](https://github.com/go-redis/redis)
+- **Security:** JWT, Bcrypt, AES-256-GCM
 - **Containerization:** Docker & Docker Compose
 
 ---
@@ -76,6 +80,21 @@ Global exception filters. If a controller encounters an error, it shouldn't need
 ### 6. Pipes (`src/common/pipes`)
 
 Used for input payload serialization and syntax validation. Gost leverages Go Generics in `pipes.ValidateBody[DTO](c)` to parse JSON bodies directly into typed DTOs and validate them strictly based on Gin's binding tags.
+
+### 7. Connectivity & Real-time (`src/modules/ws`, `src/common/messaging`)
+
+Gost provides out-of-the-box support for:
+- **Websockets**: Persistent bidirectional communication using a central Hub.
+- **RabbitMQ**: Asynchronous message production and consumption (Scaffolding ready).
+- **Webhooks**: Reliable event dispatching with HMAC signatures and exponential backoff retries.
+
+### 🔐 8. Security & Protection (`src/common/security`, `src/modules/auth`)
+
+Security is baked into the framework core:
+- **JWT Auth**: Access tokens and Refresh tokens managed via Redis.
+- **RBAC**: Protect your routes using `Guards.RolesGuard("admin")`.
+- **Rate Limit**: Stop brute force attacks with the built-in Redis rate limiter.
+- **Encryption**: Built-in utilities for Bcrypt hashing and AES-256 encryption.
 
 ---
 
@@ -150,34 +169,32 @@ To run and develop on this project, ensure you have installed:
 ```text
 gost/
 ├── main.go                     // Application entry point (Bootstrap)
-├── docker-compose.yml          // Infrastructure definitions
+├── docker-compose.yml          // Infrastructure definitions (Postgres, Redis, RabbitMQ)
 ├── src/
 │   ├── app/
 │   │   └── app.module.go       // Main registrar (mounts routes, configs, middlewares)
 │   ├── common/
 │   │   ├── filters/            // Global Error Handling
-│   │   ├── guards/             // Authentication & RBAC Middlewares
-│   │   ├── interceptors/       // Request flow modifications & logging
+│   │   ├── guards/             // Authentication, JWT, and RBAC Middlewares
+│   │   ├── interceptors/       // Request flow modifications, Logging, Rate Limiting
+│   │   ├── messaging/          // RabbitMQ Producers, Consumers, and Webhook Workers
 │   │   ├── pipes/              // Payload Validations logic
-│   │   └── utils/              // Utilities (e.g., File Upload)
+│   │   ├── security/           // Cryptographic utils (Bcrypt, AES-256)
+│   │   └── utils/              // Utilities (File Upload, Webhook Dispatcher)
 │   ├── config/
-│   │   ├── database.go         // Database configuration & connection execution
+│   │   ├── database.go         // Database configuration
+│   │   ├── rabbitmq.go         // Messaging broker setup
 │   │   └── redis.go            // Cache configuration
 │   └── modules/
+│       ├── auth/               // JWT Identity management (Login, Refresh, Logout)
+│       ├── ws/                 // Websocket Hub and Client management
 │       └── users/              // [Example] Domain Module
 │           ├── dto/            // Payload validation and input schemas
-│           │   └── create-user.dto.go
 │           ├── entities/       // Database models
-│           │   └── user.entity.go
-│           ├── exceptions/     // Domain-specific custom errors
-│           ├── presenters/     // Response serialization and data formatting
-│           ├── queries/        // Complex or raw DB queries (CQRS patterns)
-│           ├── tests/          // Unit, integration and e2e tests
-│           ├── users.controller.go // Entrypoint for HTTP communication
-│           ├── users.module.go     // Domain Dependency Injection setup
-│           ├── users.repository.go // Database operations layer
-│           ├── users.service.go    // Core business logic
-│           └── users.consumer.go   // Optional: AMQP/Kafka consumers
+│           ├── users.controller.go 
+│           ├── users.module.go     
+│           ├── users.repository.go 
+│           └── users.service.go    
 ```
 
 ### Creating a New Module
@@ -224,16 +241,19 @@ func (ctrl *ProductController) Create(c *gin.Context) {
 
 ---
 
-## 📡 Included API Overview (Users Example)
+### 📡 Included API Overview
 
-Gost ships with a fully functioning `Users` module out-of-the-box to demonstrate the architecture practically:
+#### Auth Module
+- `POST /api/v1/auth/login` - Authenticate and receive Access & Refresh tokens
+- `POST /api/v1/auth/logout` - Invalidate current session (Redis Blacklist)
 
-- `GET /api/v1/users` - List all users
+#### Users Module
+- `GET /api/v1/users` - List all users (Example of Repository pattern)
 - `GET /api/v1/users/:id` - Fetch user details
 - `POST /api/v1/users` - Create a new user (Validates Email & Name size)
 - `PUT /api/v1/users/:id` - Update user details
 - `DELETE /api/v1/users/:id` - Delete a user
-- `POST /api/v1/users/:id/avatar` - Upload a user avatar image (multipart/form-data with key `file`)
+- `POST /api/v1/users/:id/avatar` - Upload a user avatar image (multipart/form-data)
 
 ---
 
