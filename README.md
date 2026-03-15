@@ -84,6 +84,7 @@ Used for input payload serialization and syntax validation. Gost leverages Go Ge
 ### 7. Connectivity & Real-time (`src/modules/ws`, `src/common/messaging`)
 
 Gost provides out-of-the-box support for:
+
 - **Websockets**: Persistent bidirectional communication using a central Hub.
 - **RabbitMQ**: Asynchronous message production and consumption (Scaffolding ready).
 - **Webhooks**: Reliable event dispatching with HMAC signatures and exponential backoff retries.
@@ -91,6 +92,7 @@ Gost provides out-of-the-box support for:
 ### 🔐 8. Security & Protection (`src/common/security`, `src/modules/auth`)
 
 Security is baked into the framework core:
+
 - **JWT Auth**: Access tokens and Refresh tokens managed via Redis.
 - **RBAC**: Protect your routes using `Guards.RolesGuard("admin")`.
 - **Rate Limit**: Stop brute force attacks with the built-in Redis rate limiter.
@@ -107,6 +109,9 @@ Security is baked into the framework core:
   <img src="https://img.shields.io/badge/PostgreSQL-000?style=for-the-badge&logo=postgresql&logoColor=white" />
   <img src="https://img.shields.io/badge/Redis-000?style=for-the-badge&logo=redis&logoColor=white" />
   <img src="https://img.shields.io/badge/Docker-000?style=for-the-badge&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/RabbitMQ-000?style=for-the-badge&logo=rabbitmq&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-000?style=for-the-badge&logo=jwt&logoColor=white" />
+  <img src="https://img.shields.io/badge/Bcrypt-000?style=for-the-badge&logo=bcrypt&logoColor=white" />
 </div>
 
 ---
@@ -191,10 +196,10 @@ gost/
 │       └── users/              // [Example] Domain Module
 │           ├── dto/            // Payload validation and input schemas
 │           ├── entities/       // Database models
-│           ├── users.controller.go 
-│           ├── users.module.go     
-│           ├── users.repository.go 
-│           └── users.service.go    
+│           ├── users.controller.go
+│           ├── users.module.go
+│           ├── users.repository.go
+│           └── users.service.go
 ```
 
 ### Creating a New Module
@@ -244,10 +249,12 @@ func (ctrl *ProductController) Create(c *gin.Context) {
 ### 📡 Included API Overview
 
 #### Auth Module
+
 - `POST /api/v1/auth/login` - Authenticate and receive Access & Refresh tokens
 - `POST /api/v1/auth/logout` - Invalidate current session (Redis Blacklist)
 
 #### Users Module
+
 - `GET /api/v1/users` - List all users (Example of Repository pattern)
 - `GET /api/v1/users/:id` - Fetch user details
 - `POST /api/v1/users` - Create a new user (Validates Email & Name size)
