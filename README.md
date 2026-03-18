@@ -136,70 +136,49 @@ To run and develop on this project, ensure you have installed:
 
 ---
 
-## 🚀 Installation & Setup
+## 🚀 Quick Start: Installation
 
-1. **Clone the repository:**
+Pick your favorite way to install the **Gost CLI**:
 
-   ```bash
-   git clone https://github.com/yourusername/gost.git my-app
-   cd my-app
-   ```
+### 1. One-liner (Shell)
+Ideal for Linux, macOS, and Git Bash:
+```bash
+curl -sSL https://gost.run/install.sh | sh
+```
 
-2. **Start the Infrastructure (PostgreSQL & Redis):**
+### 2. Go Global (Recommended)
+Install directly from source into your `$GOPATH/bin`:
+```bash
+go install github.com/jscodedevelopment/gost/cmd/gost@latest
+```
 
-   ```bash
-   docker-compose up -d
-   ```
+### 3. Brew (macOS)
+```bash
+brew install jscodedevelopment/tap/gost
+```
 
-   _(Wait a few seconds for the database containers to fully initialize)._
-
-3. **Configure Environment Variables:**
-
-   Copy the example environment file and define your database/redis configuration:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   The `.env` file manages configurations for the DB, Redis, and application port.
-
-4. **Install Go Dependencies:**
-
-   ```bash
-   go mod tidy
-   ```
-
-5. **Run the Application:**
-   ```bash
-   go run main.go
-   ```
-   The API will boot up and be accessible at `http://localhost:3000/api/v1`.
+### 4. NPX / Node.js
+```bash
+npx gost-cli init my-project
+```
 
 ---
 
 ## ⚡ Gost CLI - The Superpower
 
-Gost comes with a powerful CLI to automate manual tasks and ensure consistency across your project.
+Once installed, you don't need to clone the repository ever again. The **Gost CLI** is standalone and carries the framework within it.
 
-### 1. Installation
-Build the binary and move it to your path:
-```bash
-go build -o gost cmd/gost/main.go
-# Optional: move to your bin folder
-mv gost /usr/local/bin 
-```
-
-### 2. Project Initialization (`init`)
-Bootstrap a new project with an interactive prompt or flags. You can choose a **Full** template (all modules included) or **Basic** (pick exactly what you need).
+### 1. Project Initialization (`init`)
+Bootstrap a new project in seconds with an interactive prompt. You can choose a **Full** template (all modules included) or **Basic** (pick exactly what you need).
 
 **Interactive:**
 ```bash
-gost init
+gost init my-api
 ```
 
-**Non-interactive (Basic with specific modules):**
+**Non-interactive:**
 ```bash
-gost init --name my-api --template Basic --modules auth,i18n
+gost init my-api --template Basic --modules auth,i18n
 ```
 
 ### 3. Creating a Module (`make:module`)

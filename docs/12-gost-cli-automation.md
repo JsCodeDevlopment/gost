@@ -1,59 +1,57 @@
-# 12 - Gost CLI Automation
-
 The **Gost CLI** is the framework's automation engine. It is designed to eliminate boilerplate code and speed up the development process by scaffolding projects and generating full-stack modules following Gost's architectural standards.
+
+Starting from version 1.1.0, the CLI is **Standalone**, meaning it carries the entire framework within its binary using Go's embedding feature.
 
 ---
 
-## 📂 CLI Architecture
+## 📂 Standalone Architecture
 
-The CLI source code is localized in `cmd/gost` and follows a command-pattern structure using the [Cobra](https://github.com/spf13/cobra) library.
+The CLI follows a command-pattern structure using the [Cobra](https://github.com/spf13/cobra) library.
 
-### 1. Entry Point (`main.go`)
-The main entry point that simply calls `commands.Execute()`.
+### 1. Embedded Templates
+The framework source code (`src/`, `locales/`, `docs/`, etc.) is embedded into the binary using `go:embed TemplateFS`. This allows the CLI to initialize new projects without needing to clone the repository or have the source code locally.
 
-### 2. Root Command (`commands/root.go`)
-Sets up the base `gost` command and provides the foundational CLI structure.
-
-### 3. Project Initializer (`commands/init.go`)
-The most complex command. It handles:
-- **Interactive Prompts**: Uses `survey` to ask for project name and template type.
-- **Directory Cloning**: Copies the current repository into a new folder, excluding development files like `.git`, `cmd`, and `test`.
+### 2. Project Initializer (`commands/init.go`)
+The `gost init` command leverages the embedded filesystem:
+- **Extraction**: It walks through `TemplateFS` and writes the files to the user's destination directory.
 - **Module Pruning**: If the user chooses a "Basic" template, it physically removes the code and configurations for modules not selected (e.g., Auth, RabbitMQ, i18n).
 - **Template Patching**: Replaces the generic `gost` module name with the new project name across all `.go` and `go.mod` files.
 
-### 4. Module Scaffolder (`commands/make_module.go`)
-Generates a standard folder structure for a domain module:
-- `src/modules/<name>/dto`
-- `src/modules/<name>/entities`
-- `src/modules/<name>/repositories`
-- `src/modules/<name>/services`
-- It also creates a base `<name>.module.go` file with an `InitModule` function.
+---
 
-### 5. CRUD Generator (`commands/make_crud.go`)
-The productivity powerhouse. It performs a complete code generation cycle:
-- **Entity Generation**: Creates a GORM model.
-- **DTO Generation**: Creates Create/Update structs with validation tags.
-- **Repository/Service/Controller**: Generates all three layers with pre-built logic for Create, FindAll, FindOne, Update, and Delete.
-- **Auto-Registration**: Parses `src/app/app.module.go`, adds the necessary imports, and calls the new module's `InitModule(api)` within the `SetupApp` function.
+## 🚀 Installation & Distribution
+
+The Gost CLI can be installed globally without cloning the repository.
+
+### 1. One-liner (Fastest)
+Ideal for Linux, macOS, and Git Bash:
+```bash
+curl -sSL https://gost.run/install.sh | sh
+```
+
+### 2. Go Global (Recommended for Developers)
+Install directly into your `$GOPATH/bin`:
+```bash
+go install github.com/jscodedevelopment/gost/cmd/gost@latest
+```
+
+### 3. NPX (Node.js ecosystem)
+Run without permanent installation:
+```bash
+npx gost-cli init my-project
+```
 
 ---
 
-## 🚀 Commands & Usage
+## 🛠️ Usage Guide
 
-### Initialize a New Project
-
-**Interactive Mode:**
+### Initializing a Project
 ```bash
-gost init
+gost init my-api
 ```
+Follow the interactive prompts to name your project and select the modules you need (Authentication, Messaging, i18n).
 
-**Flag-based Mode (Scriptable):**
-```bash
-gost init --name my-api --template Basic --modules auth,i18n
-```
-*Modules available: `auth`, `messaging`, `i18n`.*
-
-### Generate a Domain Module
+### Generating a Domain Module
 ```bash
 gost make:module catalog
 ```
@@ -62,18 +60,15 @@ gost make:module catalog
 ```bash
 gost make:crud order
 ```
-*Note: Pass the singular name. It will automatically pluralize the folder and endpoints (e.g., `order` -> `/api/v1/orders`).*
+*Creates: Entity, DTOs, Repository, Service, Controller and registers them in `app.module.go`.*
 
 ---
 
 ## 🔄 Internal Logic Flows
 
 ### Project Scaffolding Flow
-1. **Copy**: Recursive copy of the Gost repo.
-2. **Prune**: If "Basic", delete unwanted folders:
-   - `!auth` -> removes `src/modules/auth`, `src/common/guards`, `src/common/security`.
-   - `!messaging` -> removes `src/common/messaging`, `src/config/rabbitmq.go`.
-   - `!i18n` -> removes `src/common/i18n`, `locales/`.
+1. **Extraction**: Recursive walk of `gost.TemplateFS`.
+2. **Prune**: If "Basic", delete unwanted folders from the newly created directory.
 3. **Patch**: 
    - Update `go.mod` module name.
    - Update all imports in `.go` files.
@@ -81,7 +76,7 @@ gost make:crud order
 
 ### CRUD Generation Flow
 1. **Templates**: Injected Go-string templates with placeholders.
-2. **Project Detection**: Reads the current `go.mod` to ensure imports match your application name.
+2. **Project Detection**: Reads the local `go.mod` to ensure imports match your application name.
 3. **File Creation**: Writes 6 distinct files.
 4. **Registration**: 
    - Finds `import (` and injects the new module path.
@@ -91,6 +86,6 @@ gost make:crud order
 
 ## ⚠️ Important Considerations
 
+- **Standalone Mode**: The CLI carries a snapshot of the framework from when it was built. To get the latest framework updates, simply run `go install ...@latest` again.
 - **Server Restart**: After running `make:crud`, you must restart your Go server for the new routes to be registered.
-- **Database Migration**: The CLI generates the Entity, but you should ensure your DB is configured to handle the new table (GORM's AutoMigrate is recommended in your module init).
-- **Naming**: Always use lowercase singular names for the commands. The CLI handles capitalization and pluralization for you.
+- **Database Migration**: The CLI generates the Entity, but you should ensure your DB is configured to handle the new table.
