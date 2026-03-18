@@ -31,6 +31,7 @@ It provides a ready-to-use environment completely configured with a powerful HTT
 - **Global Error Handling**: Centralized exception filtering to avoid leaking panics and standardizing API error JSON responses (`Filters`).
 - **Middleware Abstractions**: Simple interfaces for `Interceptors` (request logging/modification) and `Guards` (authentication/authorization).
 - **Advanced Security**: Integrated JWT with Access/Refresh tokens, Redis-based blacklisting, and RBAC (Role-Based Access Control).
+- **Internationalization (i18n)**: Out-of-the-box support for multi-language APIs, localized validation errors, and dynamic locale detection via headers.
 - **Communication & Real-time**: Fully integrated RabbitMQ for async processing, Websockets (Hub/Client) for real-time interaction, and secure Webhooks with HMAC signatures and auto-retries.
 - **Data Protection**: Hardened password hashing with Bcrypt and AES-256-GCM field-level encryption.
 - **Resilience**: Redis-powered Rate Limiting to prevent DDoS and brute-force attacks.
@@ -98,6 +99,13 @@ Security is baked into the framework core:
 - **Rate Limit**: Stop brute force attacks with the built-in Redis rate limiter.
 - **Encryption**: Built-in utilities for Bcrypt hashing and AES-256 encryption.
 
+### 🌍 9. Internationalization (i18n) (`src/common/i18n`)
+
+A centralized translation system:
+- **Middleware**: Detects user locale from `Accept-Language` headers.
+- **Localized Validation**: Automatically translates struct validation errors (e.g., "Field required" to "Campo obrigatório").
+- **Dynamic Messages**: Effortlessly translates responses based on `.json` locale files.
+
 ---
 
 ## Used Tecnologies
@@ -112,6 +120,7 @@ Security is baked into the framework core:
   <img src="https://img.shields.io/badge/RabbitMQ-000?style=for-the-badge&logo=rabbitmq&logoColor=white" />
   <img src="https://img.shields.io/badge/JWT-000?style=for-the-badge&logo=jwt&logoColor=white" />
   <img src="https://img.shields.io/badge/Bcrypt-000?style=for-the-badge&logo=bcrypt&logoColor=white" />
+  <img src="https://img.shields.io/badge/i18n-000?style=for-the-badge&logo=google-translate&logoColor=white" />
 </div>
 
 ---
@@ -181,6 +190,7 @@ gost/
 │   ├── common/
 │   │   ├── filters/            // Global Error Handling
 │   │   ├── guards/             // Authentication, JWT, and RBAC Middlewares
+│   │   ├── i18n/               // Internationalization (Middleware, Providers, Validators)
 │   │   ├── interceptors/       // Request flow modifications, Logging, Rate Limiting
 │   │   ├── messaging/          // RabbitMQ Producers, Consumers, and Webhook Workers
 │   │   ├── pipes/              // Payload Validations logic
@@ -278,6 +288,7 @@ To explore the full potential of the library, we've created a directory with exp
 8. [08 - Testing Strategies (Unit & E2E)](./docs/08-testing-strategies.md)
 9. [09 - Security Deep Dive: Authenticity and Protection](./docs/09-security-deep-dive-authenticity-and-protection.md)
 10. [10 - Communication and Connectivity (RabbitMQ, WS, Webhooks)](./docs/10-communication-and-connectivity.md)
+11. [11 - Internationalization (i18n): Multi-language Support](./docs/11-internationalization-i18n.md)
 
 ---
 
