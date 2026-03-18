@@ -171,6 +171,37 @@ npx gost-cli init my-project
 
 ---
 
+## 🗑️ Uninstallation
+
+If you need to remove the **Gost CLI** from your system, follow the steps for your installation method:
+
+### 1. Go Global
+On Windows (PowerShell):
+```powershell
+Remove-Item $Env:USERPROFILE\go\bin\gost.exe
+```
+On Linux/macOS:
+```bash
+rm $(which gost)
+```
+
+### 2. Brew (macOS)
+```bash
+brew uninstall JsCodeDevlopment/tap/gost
+```
+
+### 3. NPX / Node.js
+If you installed it globally via npm:
+```bash
+npm uninstall -g gost-cli
+```
+Otherwise, simply clear your npx cache (optional):
+```bash
+npx clear-npx-cache
+```
+
+---
+
 ## ⚡ Gost CLI - The Superpower
 
 Once installed, you don't need to clone the repository ever again. The **Gost CLI** is standalone and carries the framework within it.
