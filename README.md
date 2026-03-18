@@ -28,6 +28,7 @@ It provides a ready-to-use environment completely configured with a powerful HTT
 - **NestJS-like Architecture**: Logical separation of concerns through Modules, Controllers, Services, and Repositories.
 - **Dependency Injection pattern**: Clean and manual wiring of dependencies keeping the codebase tightly coupled only where it needs to be.
 - **Built-in Validation**: Class-validator style validation using Go Generics and struct tags (`Pipes`).
+- **Gost CLI**: A powerful command-line tool for project initialization, module scaffolding, and automatic CRUD generation.
 - **Global Error Handling**: Centralized exception filtering to avoid leaking panics and standardizing API error JSON responses (`Filters`).
 - **Middleware Abstractions**: Simple interfaces for `Interceptors` (request logging/modification) and `Guards` (authentication/authorization).
 - **Advanced Security**: Integrated JWT with Access/Refresh tokens, Redis-based blacklisting, and RBAC (Role-Based Access Control).
@@ -176,6 +177,54 @@ To run and develop on this project, ensure you have installed:
 
 ---
 
+## ⚡ Gost CLI - The Superpower
+
+Gost comes with a powerful CLI to automate manual tasks and ensure consistency across your project.
+
+### 1. Installation
+Build the binary and move it to your path:
+```bash
+go build -o gost cmd/gost/main.go
+# Optional: move to your bin folder
+mv gost /usr/local/bin 
+```
+
+### 2. Project Initialization (`init`)
+Bootstrap a new project with an interactive prompt or flags. You can choose a **Full** template (all modules included) or **Basic** (pick exactly what you need).
+
+**Interactive:**
+```bash
+gost init
+```
+
+**Non-interactive (Basic with specific modules):**
+```bash
+gost init --name my-api --template Basic --modules auth,i18n
+```
+
+### 3. Creating a Module (`make:module`)
+Scaffolds a clean directory structure for a new domain.
+```bash
+gost make:module orders
+```
+*Creates: `src/modules/orders/{dto,entities,repositories,services}` and `orders.module.go`.*
+
+### 4. Automatic CRUD Generation (`make:crud`)
+The ultimate productivity booster. Generates a complete domain module with Entity, DTOs, Repository, Service, and Controller, and **automatically registers** it in `app.module.go`.
+
+```bash
+gost make:crud product
+```
+
+**Workflow Flow:**
+1. Run `make:crud <name>`.
+2. The CLI detects your project name from `go.mod`.
+3. Files are generated with correct imports.
+4. `InitModule` is called in `app.module.go`.
+5. Your REST API is live! (Just restart the server).
+
+---
+
 ## 📖 Usage Guide
 
 ### Directory Structure Overview
@@ -214,7 +263,7 @@ gost/
 
 ### Creating a New Module
 
-Say you want to create a `Products` module:
+The recommended way to create a module is using the **Gost CLI**. However, if you prefer doing it manually:
 
 1. Create a folder `src/modules/products`.
 2. Following the NestJS pattern, segregate your files:
@@ -289,6 +338,7 @@ To explore the full potential of the library, we've created a directory with exp
 9. [09 - Security Deep Dive: Authenticity and Protection](./docs/09-security-deep-dive-authenticity-and-protection.md)
 10. [10 - Communication and Connectivity (RabbitMQ, WS, Webhooks)](./docs/10-communication-and-connectivity.md)
 11. [11 - Internationalization (i18n): Multi-language Support](./docs/11-internationalization-i18n.md)
+12. [12 - Gost CLI Automation: Productivity & Scaffolding](./docs/12-gost-cli-automation.md)
 
 ---
 
