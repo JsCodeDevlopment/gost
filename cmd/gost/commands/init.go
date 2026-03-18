@@ -11,6 +11,7 @@ import (
 	"github.com/JsCodeDevlopment/gost"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -33,8 +34,42 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 }
 
+func printWelcome() {
+
+	cyan := color.New(color.FgCyan).SprintFunc()
+	green := color.New(color.FgGreen).SprintFunc()
+	yellow := color.New(color.FgYellow).SprintFunc()
+
+	fmt.Println(cyan(`
+   ██████╗  ██████╗ ███████╗████████╗
+  ██╔════╝ ██╔═══██╗██╔════╝╚══██╔══╝
+  ██║  ███╗██║   ██║███████╗   ██║   
+  ██║   ██║██║   ██║╚════██║   ██║   
+  ╚██████╔╝╚██████╔╝███████║   ██║   
+   ╚═════╝  ╚═════╝ ╚══════╝   ╚═╝   
+`))
+
+	fmt.Println(green("⚡ Fast. Minimal. Powerful Go Framework"))
+	fmt.Println()
+
+	fmt.Println(yellow("🚀 Welcome to Gost CLI Project Initializer"))
+	fmt.Println(yellow("Designed by JsCodeDevlopment"))
+	fmt.Println(yellow("GitHub: https://github.com/JsCodeDevlopment/gost"))
+	fmt.Println("──────────────────────────────────────────────")
+	fmt.Println("Create production-ready Go applications in seconds.")
+	fmt.Println()
+
+	fmt.Println("✨ What you can do:")
+	fmt.Println("  • Generate a new project structure")
+	fmt.Println("  • Add modules (auth, database, etc)")
+	fmt.Println("  • Start fast with best practices")
+	fmt.Println()
+
+	fmt.Println("📦 Let’s set up your project...\n")
+}
+
 func runInit(cmd *cobra.Command, args []string) {
-	fmt.Println("🚀 Welcome to the Gost CLI Project Initializer!")
+	printWelcome()
 
 	var answers struct {
 		ProjectName  string
