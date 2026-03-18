@@ -1,0 +1,26 @@
+{
+  "name": "gost-cli",
+  "version": "1.1.0",
+  "description": "A powerful, opinionated Go boilerplate engineered with a NestJS-like architecture.",
+  "main": "index.js",
+  "bin": {
+    "gost": "bin/gost"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JsCodeDevlopment/gost.git"
+  },
+  "keywords": [
+    "go",
+    "golang",
+    "nestjs",
+    "cli",
+    "framework",
+    "boilerplate"
+  ],
+  "author": "JsCodeDevlopment",
+  "license": "MIT"
+}
