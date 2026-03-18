@@ -1,11 +1,14 @@
 package commands
 
 import (
+	"embed"
 	"fmt"
-	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"gost"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
@@ -102,16 +105,13 @@ func runInit(cmd *cobra.Command, args []string) {
 
 	destDir := answers.ProjectName
 
-	wd, _ := os.Getwd()
-
-	if _, err := os.Stat(filepath.Join(wd, "go.mod")); err != nil {
-		fmt.Println("❌ Error: Could not find Gost Framework source files in current directory.")
+	if err := os.MkdirAll(destDir, 0755); err != nil {
+		fmt.Printf("❌ Failed to create directory: %v\n", err)
 		return
 	}
-
-	err := copyDir(wd, destDir, []string{".git", ".gemini", "cmd", "test", answers.ProjectName})
+	err := extractEmbedFS(gost.TemplateFS, ".", destDir, []string{".git", ".gemini", "cmd", "test", answers.ProjectName})
 	if err != nil {
-		fmt.Printf("❌ Failed to copy template: %v\n", err)
+		fmt.Printf("❌ Failed to scaffold project: %v\n", err)
 		return
 	}
 
@@ -125,50 +125,41 @@ func runInit(cmd *cobra.Command, args []string) {
 	fmt.Println("👉 go run main.go")
 }
 
-func copyDir(src string, dst string, ignore []string) error {
-	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
+func extractEmbedFS(efs embed.FS, srcDir string, dstDir string, ignore []string) error {
+	return fs.WalkDir(efs, srcDir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		relPath, _ := filepath.Rel(src, path)
+		relPath, _ := filepath.Rel(srcDir, path)
+		if relPath == "." {
+			return nil
+		}
 		for _, skip := range ignore {
 			if strings.HasPrefix(relPath, skip) || relPath == skip {
-				if info.IsDir() {
-					return filepath.SkipDir
+				if d.IsDir() {
+					return fs.SkipDir
 				}
 				return nil
 			}
 		}
 
-		destPath := filepath.Join(dst, relPath)
-
-		if info.IsDir() {
-			return os.MkdirAll(destPath, info.Mode())
+		destPath := filepath.Join(dstDir, relPath)
+		if relPath == "main.go.tpl" {
+			destPath = filepath.Join(dstDir, "main.go")
 		}
 
-		return copyFile(path, destPath)
+		if d.IsDir() {
+			return os.MkdirAll(destPath, 0755)
+		}
+
+		data, err := efs.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		return os.WriteFile(destPath, data, 0644)
 	})
-}
-
-func copyFile(src, dst string) error {
-	in, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer in.Close()
-
-	out, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, in)
-	if err != nil {
-		return err
-	}
-	return out.Sync()
 }
 
 func hasModule(selected []string, module string) bool {

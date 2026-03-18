@@ -118,7 +118,7 @@ func (r *%sRepository) Update(entity *entities.%s) error {
 func (r *%sRepository) Delete(id uint) error {
 	return r.db.Delete(&entities.%s{}, id).Error
 }
-`, plural, proj, plural, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName)
+`, plural, proj, plural, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName)
 	os.WriteFile(filepath.Join(path, plural+".repository.go"), []byte(content), os.ModePerm)
 }
 
@@ -169,7 +169,7 @@ func (s *%sService) Update(id uint, data dto.Update%sDto) (*entities.%s, error) 
 func (s *%sService) Delete(id uint) error {
 	return s.repo.Delete(id)
 }
-`, plural, proj, plural, proj, plural, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName)
+`, plural, proj, plural, proj, plural, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName, capName)
 	os.WriteFile(filepath.Join(path, plural+".service.go"), []byte(content), os.ModePerm)
 }
 
