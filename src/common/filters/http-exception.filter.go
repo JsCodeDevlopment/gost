@@ -1,6 +1,7 @@
 package filters
 
 import (
+	"gost/src/common/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,11 +13,7 @@ func ErrorHandler() gin.HandlerFunc {
 
 		if len(c.Errors) > 0 {
 			err := c.Errors.Last()
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"statusCode": http.StatusInternalServerError,
-				"error":      "Internal Server Error",
-				"message":    err.Error(),
-			})
+			utils.FormattedErrorGenerator(c, http.StatusInternalServerError, "Internal Server Error", err.Error())
 		}
 	}
 }
