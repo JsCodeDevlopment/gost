@@ -1,11 +1,18 @@
 package utils
 
-import "github.com/gin-gonic/gin"
+import (
+	"gost/src/common/i18n"
 
-func FormattedErrorGenerator(c *gin.Context, statusCode int, error string, message string) {
+	"github.com/gin-gonic/gin"
+)
+
+func FormattedErrorGenerator(c *gin.Context, statusCode int, error string, message string, templateData ...interface{}) {
+	translatedMessage := i18n.Translate(c, message, templateData...)
+	translatedError := i18n.Translate(c, error)
+
 	c.AbortWithStatusJSON(statusCode, gin.H{
 		"statusCode": statusCode,
-		"error":      error,
-		"message":    message,
+		"error":      translatedError,
+		"message":    translatedMessage,
 	})
 }
