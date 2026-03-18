@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"gost/src/common/pipes"
-	"gost/src/common/utils"
-	"gost/src/modules/users/dto"
-	"gost/src/modules/users/entities"
+	"github.com/JsCodeDevlopment/gost/src/common/pipes"
+	"github.com/JsCodeDevlopment/gost/src/common/utils"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/dto"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/entities"
 
 	"github.com/gin-gonic/gin"
 )

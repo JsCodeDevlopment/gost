@@ -3,8 +3,8 @@ package users
 import (
 	"log"
 
-	"gost/src/config"
-	"gost/src/modules/users/entities"
+	"github.com/JsCodeDevlopment/gost/src/config"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/entities"
 
 	"github.com/gin-gonic/gin"
 )

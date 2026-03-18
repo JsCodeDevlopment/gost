@@ -149,12 +149,12 @@ curl -sSL https://gost.run/install.sh | sh
 ### 2. Go Global (Recommended)
 Install directly from source into your `$GOPATH/bin`:
 ```bash
-go install github.com/jscodedevelopment/gost/cmd/gost@latest
+go install github.com/JsCodeDevlopment/gost/cmd/gost@latest
 ```
 
 ### 3. Brew (macOS)
 ```bash
-brew install jscodedevelopment/tap/gost
+brew install JsCodeDevlopment/tap/gost
 ```
 
 ### 4. NPX / Node.js
@@ -354,5 +354,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ---
 
 <div align="center">
-  <i>Built with ❤️ by and for <a href="https://www.linkedin.com/in/jscodedevelopment/">Jonatas Silva</a></i>
+  <i>Built with ❤️ by and for <a href="https://www.linkedin.com/in/JsCodeDevlopment/">Jonatas Silva</a></i>
 </div>

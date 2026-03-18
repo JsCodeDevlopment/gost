@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"gost/src/modules/users"
-	"gost/src/modules/users/dto"
-	"gost/src/modules/users/entities"
+	"github.com/JsCodeDevlopment/gost/src/modules/users"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/dto"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/entities"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

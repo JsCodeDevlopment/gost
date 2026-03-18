@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"gost/src/common/utils"
-	"gost/src/config"
+	"github.com/JsCodeDevlopment/gost/src/common/utils"
+	"github.com/JsCodeDevlopment/gost/src/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

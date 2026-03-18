@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"gost/src/config"
-	"gost/src/modules/users"
+	"github.com/JsCodeDevlopment/gost/src/config"
+	"github.com/JsCodeDevlopment/gost/src/modules/users"
 
 	"github.com/gin-gonic/gin"
 )

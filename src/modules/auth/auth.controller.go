@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"gost/src/common/pipes"
-	"gost/src/common/utils"
-	"gost/src/modules/auth/dto"
+	"github.com/JsCodeDevlopment/gost/src/common/pipes"
+	"github.com/JsCodeDevlopment/gost/src/common/utils"
+	"github.com/JsCodeDevlopment/gost/src/modules/auth/dto"
 
 	"github.com/gin-gonic/gin"
 )

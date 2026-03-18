@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"gost/src/common/utils"
+	"github.com/JsCodeDevlopment/gost/src/common/utils"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )

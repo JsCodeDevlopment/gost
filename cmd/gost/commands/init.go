@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gost"
+	"github.com/JsCodeDevlopment/gost"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
@@ -190,7 +190,7 @@ func pruneModules(destDir string, selectedModules []string) {
 
 func patchNewProject(destDir, projectName string, selectedModules []string) {
 	goModPath := filepath.Join(destDir, "go.mod")
-	replaceInFile(goModPath, "module gost", "module "+projectName)
+	replaceInFile(goModPath, "module github.com/JsCodeDevlopment/gost", "module "+projectName)
 
 	appModulePath := filepath.Join(destDir, "src", "app", "app.module.go")
 	content, _ := os.ReadFile(appModulePath)
@@ -211,24 +211,24 @@ func patchNewProject(destDir, projectName string, selectedModules []string) {
 		if !isMQ && strings.Contains(line, "config.ConnectRabbitMQ") {
 			continue
 		}
-		if !isMQ && strings.Contains(line, "\"gost/src/common/messaging\"") {
+		if !isMQ && strings.Contains(line, "\"github.com/JsCodeDevlopment/gost/src/common/messaging\"") {
 			continue
 		}
 
 		if !isI18n && (strings.Contains(line, "i18n.Initialize") ||
 			strings.Contains(line, "i18n.InitValidator") ||
 			strings.Contains(line, "i18n.Middleware") ||
-			strings.Contains(line, "\"gost/src/common/i18n\"") ||
+			strings.Contains(line, "\"github.com/JsCodeDevlopment/gost/src/common/i18n\"") ||
 			strings.Contains(line, "\"golang.org/x/text/language\"")) {
 			continue
 		}
 
 		if !isAuth && (strings.Contains(line, "auth.InitModule(api)") ||
-			strings.Contains(line, "\"gost/src/modules/auth\"")) {
+			strings.Contains(line, "\"github.com/JsCodeDevlopment/gost/src/modules/auth\"")) {
 			continue
 		}
 
-		line = strings.ReplaceAll(line, "\"gost/", "\""+projectName+"/")
+		line = strings.ReplaceAll(line, "\"github.com/JsCodeDevlopment/gost/", "\""+projectName+"/")
 
 		newLines = append(newLines, line)
 	}
@@ -237,7 +237,7 @@ func patchNewProject(destDir, projectName string, selectedModules []string) {
 
 	filepath.Walk(destDir, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() && filepath.Ext(path) == ".go" {
-			replaceInFile(path, "\"gost/", "\""+projectName+"/")
+			replaceInFile(path, "\"github.com/JsCodeDevlopment/gost/", "\""+projectName+"/")
 		}
 		return nil
 	})

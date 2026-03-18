@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"gost/src/common/i18n"
+	"github.com/JsCodeDevlopment/gost/src/common/i18n"
 
 	"github.com/gin-gonic/gin"
 )

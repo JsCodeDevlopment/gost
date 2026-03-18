@@ -6,11 +6,11 @@ import (
 	"os"
 	"time"
 
-	"gost/src/config"
+	"github.com/JsCodeDevlopment/gost/src/config"
 
-	"gost/src/common/security"
-	"gost/src/modules/auth/dto"
-	"gost/src/modules/users"
+	"github.com/JsCodeDevlopment/gost/src/common/security"
+	"github.com/JsCodeDevlopment/gost/src/modules/auth/dto"
+	"github.com/JsCodeDevlopment/gost/src/modules/users"
 
 	"github.com/golang-jwt/jwt/v5"
 )

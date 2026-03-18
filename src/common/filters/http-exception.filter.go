@@ -1,7 +1,7 @@
 package filters
 
 import (
-	"gost/src/common/utils"
+	"github.com/JsCodeDevlopment/gost/src/common/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

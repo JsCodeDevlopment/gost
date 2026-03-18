@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gost/src/app"
-	"gost/src/modules/users/dto"
+	"github.com/JsCodeDevlopment/gost/src/app"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/dto"
 
 	"github.com/stretchr/testify/assert"
 )

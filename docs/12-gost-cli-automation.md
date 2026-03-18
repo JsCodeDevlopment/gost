@@ -32,7 +32,7 @@ curl -sSL https://gost.run/install.sh | sh
 ### 2. Go Global (Recommended for Developers)
 Install directly into your `$GOPATH/bin`:
 ```bash
-go install github.com/jscodedevelopment/gost/cmd/gost@latest
+go install github.com/JsCodeDevlopment/gost/cmd/gost@latest
 ```
 
 ### 3. NPX (Node.js ecosystem)

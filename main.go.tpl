@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gost/src/app"
+	"github.com/JsCodeDevlopment/gost/src/app"
 )
 
 func main() {

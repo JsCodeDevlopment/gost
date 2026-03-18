@@ -1,8 +1,8 @@
 package pipes
 
 import (
-	"gost/src/common/i18n"
-	"gost/src/common/utils"
+	"github.com/JsCodeDevlopment/gost/src/common/i18n"
+	"github.com/JsCodeDevlopment/gost/src/common/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

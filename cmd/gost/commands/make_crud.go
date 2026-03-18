@@ -301,7 +301,7 @@ func registerModule(plural, proj string) {
 func getProjectName() string {
 	data, err := os.ReadFile("go.mod")
 	if err != nil {
-		return "gost"
+		return "github.com/JsCodeDevlopment/gost"
 	}
 	lines := strings.Split(string(data), "\n")
 	if len(lines) > 0 {
@@ -310,5 +310,5 @@ func getProjectName() string {
 			return parts[1]
 		}
 	}
-	return "gost"
+	return "github.com/JsCodeDevlopment/gost"
 }

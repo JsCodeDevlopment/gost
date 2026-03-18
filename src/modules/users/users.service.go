@@ -1,9 +1,9 @@
 package users
 
 import (
-	"gost/src/common/security"
-	"gost/src/modules/users/dto"
-	"gost/src/modules/users/entities"
+	"github.com/JsCodeDevlopment/gost/src/common/security"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/dto"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/entities"
 )
 
 type UserService interface {

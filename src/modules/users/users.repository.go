@@ -1,7 +1,7 @@
 package users
 
 import (
-	"gost/src/modules/users/entities"
+	"github.com/JsCodeDevlopment/gost/src/modules/users/entities"
 
 	"gorm.io/gorm"
 )
