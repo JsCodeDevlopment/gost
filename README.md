@@ -103,6 +103,7 @@ Security is baked into the framework core:
 ### 🌍 9. Internationalization (i18n) (`src/common/i18n`)
 
 A centralized translation system:
+
 - **Middleware**: Detects user locale from `Accept-Language` headers.
 - **Localized Validation**: Automatically translates struct validation errors (e.g., "Field required" to "Campo obrigatório").
 - **Dynamic Messages**: Effortlessly translates responses based on `.json` locale files.
@@ -141,23 +142,29 @@ To run and develop on this project, ensure you have installed:
 Pick your favorite way to install the **Gost CLI**:
 
 ### 1. One-liner (Shell)
+
 Ideal for Linux, macOS, and Git Bash:
+
 ```bash
 curl -sSL https://gost.run/install.sh | sh
 ```
 
 ### 2. Go Global (Recommended)
+
 Install directly from source into your `$GOPATH/bin`:
+
 ```bash
 go install github.com/JsCodeDevlopment/gost/cmd/gost@latest
 ```
 
 ### 3. Brew (macOS)
+
 ```bash
 brew install JsCodeDevlopment/tap/gost
 ```
 
 ### 4. NPX / Node.js
+
 ```bash
 npx gost-cli init my-project
 ```
@@ -169,26 +176,33 @@ npx gost-cli init my-project
 Once installed, you don't need to clone the repository ever again. The **Gost CLI** is standalone and carries the framework within it.
 
 ### 1. Project Initialization (`init`)
+
 Bootstrap a new project in seconds with an interactive prompt. You can choose a **Full** template (all modules included) or **Basic** (pick exactly what you need).
 
 **Interactive:**
+
 ```bash
 gost init my-api
 ```
 
 **Non-interactive:**
+
 ```bash
 gost init my-api --template Basic --modules auth,i18n
 ```
 
 ### 3. Creating a Module (`make:module`)
+
 Scaffolds a clean directory structure for a new domain.
+
 ```bash
 gost make:module orders
 ```
-*Creates: `src/modules/orders/{dto,entities,repositories,services}` and `orders.module.go`.*
+
+_Creates: `src/modules/orders/{dto,entities,repositories,services}` and `orders.module.go`._
 
 ### 4. Automatic CRUD Generation (`make:crud`)
+
 The ultimate productivity booster. Generates a complete domain module with Entity, DTOs, Repository, Service, and Controller, and **automatically registers** it in `app.module.go`.
 
 ```bash
@@ -196,6 +210,7 @@ gost make:crud product
 ```
 
 **Workflow Flow:**
+
 1. Run `make:crud <name>`.
 2. The CLI detects your project name from `go.mod`.
 3. Files are generated with correct imports.
