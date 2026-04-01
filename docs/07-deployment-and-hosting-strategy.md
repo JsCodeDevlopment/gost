@@ -82,20 +82,13 @@ services:
 ### Option C: Vercel (Serverless Functions)
 
 **Overview:**
-Vercel does not run traditional long-running Go servers. Instead, it runs serverless functions that execute when an HTTP request is received. While standard Vercel tutorials dictate creating multiple files inside the `/api` directory (where each file is an endpoint), doing so would break Gost's robust monolithic architecture and Dependency Injection.
-
-To deploy Gost (which uses the Gin framework) on Vercel, we map **all** incoming traffic through a single Serverless "catch-all" handler.
+Vercel runs Go as serverless functions. To deploy a monolithic Gin application (like this one) on Vercel, we map all incoming traffic to a single catch-all handler.
 
 **Step 1 — Configure Vercel Routing (`vercel.json`)**
-Create a `vercel.json` file in your root folder:
+Create a `vercel.json` in your root. A simple rewrite is enough to map everything to your entry point:
 
 ```json
 {
-  "functions": {
-    "api/index.go": {
-      "runtime": "vercel-go@3.0.0"
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
@@ -105,65 +98,56 @@ Create a `vercel.json` file in your root folder:
 }
 ```
 
-_This catches all traffic and routes it to our single Go handler._
-
-**Step 2 — Exposing the Router in Gost**
-You must adjust `src/app/app.module.go`. Currently, `Bootstrap()` runs `router.Run()`. You need to extract the router setup so Vercel can consume it.
-
-Modify your `app.module.go` (extracting the `router.Run` part) to return the `*gin.Engine`:
+**Step 2 — Exposing the Router in the App**
+Your `src/app/app.module.go` must have a `Bootstrap()` function that returns `*gin.Engine` (not one that calls `router.Run()`).
 
 ```go
-package app
-// ... imports
-
 func Bootstrap() *gin.Engine {
     config.LoadEnv()
-    // ConnectDatabase() -> (Warning: ensure your DB supports serverless connections/pooling)
-    // ConnectRedis()
-
+    config.ConnectDatabase() // Ensure DATABASE_URL is set in Vercel
+    // ...
     router := gin.Default()
-    router.Use(config.SetupCors())
-
-    // ... middlewares
-
-    api := router.Group("/api/v1")
-    users.InitModule(api)
-
+    // ... setup routes and modules
     return router
 }
 ```
 
-**Step 3 — Create the Serverless Entrypoint**
-Create a new folder and file at the root of the project: `api/index.go`.
+**Step 3 — Handling Translations (The Embed Way)**
+Go serverless functions on Vercel cannot always find files on disk. To solve this, we use `go:embed` to compile the translation JSONs into the binary.
+1. Put your translation files in `src/common/i18n/locales/*.json`.
+2. In your i18n provider, use `//go:embed locales/*.json` to load them.
+
+**Step 4 — Create the Serverless Entrypoint**
+Create `api/index.go` at the root of the project:
 
 ```go
 package handler
 
 import (
     "net/http"
-    "gost/src/app"
+    "api/src/app" // Use "api" as it is the name in your go.mod
 )
 
-// We define the GIN engine globally so it boots only once per warm serverless container
 var engine = app.Bootstrap()
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-    // We let Gin HTTP engine handle the raw Vercel request transparently
     engine.ServeHTTP(w, r)
 }
 ```
 
-**Step 4 — Test and Deploy**
+**Step 5 — Database & Environment Variables**
+1. **Critical:** In Vercel Project Settings, add `DATABASE_URL` with your remote connection string (e.g., Supabase or Neon).
+2. For Postgres on Vercel, it is recommended to append `?sslmode=require` to your connection string.
 
-- Install Vercel CLI: `npm install -g vercel`
-- Test locally: `vercel dev`
-- Deploy: `vercel login` and `vercel`
+**Step 6 — Test and Deploy**
+- Push your changes to GitHub (if connected to Vercel).
+- Or run `vercel` from your terminal to deploy manually.
 
-**⚠️ Critical Limitations for Gost on Vercel:**
+**⚠️ Critical Limitations for Vercel:**
+- **Persistent Connections:** WebSockets and background goroutines (like `hub.Run`) may not work as expected across different requests.
+- **Cold Starts:** The first request after a period of inactivity may take longer as the function boots.
+- **Ephemeral Storage:** Local file writing is not supported. Use S3 or similar for uploads.
 
-- **Database Connections:** Serverless functions scale to 1000s of instances instantly, booting from zero. This will exhaust standard PostgreSQL connections quickly. You **MUST** use a connection pooler like PgBouncer or a Serverless DB (like Supabase, Neon.tech, or PlanetScale).
-- **In-Memory states:** Go routines or global maps will not persist between requests as Vercel kills the container after completion. Redis is mandatory for caching.
-- File uploads (`/uploads`) to the local disk will fail on Vercel because the file system is read-only and ephemeral. You must change your upload utility to use S3 (AWS) or standard Cloud Storages.
 
 ---
 
@@ -186,6 +170,6 @@ Caddy will automatically provision and renew Let's Encrypt SSL certificates for 
 
 ## 4. Environment Checklist for Prod
 
-- Ensure `DB_HOST` and `REDIS_HOST` point to the correct production credentials.
+- Ensure `DATABASE_URL` and `REDIS_HOST` point to the correct production credentials.
 - Ensure `ALLOWED_CORS` has your exact Frontend domains listed, removing `*`.
 - Set Gin to Release Mode by adding `GIN_MODE=release` to your `.env` file to prevent Gin from printing debug logs into standard output in production.
